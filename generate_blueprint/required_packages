@@ -1,0 +1,2 @@
+module load SciPy-bundle/2020.11-foss-2020b
+module load Biopython/1.78-foss-2020b
