@@ -1,0 +1,4 @@
+Analyze and filter the designs based on the properties of the polar network in the pore and pore packing. 
+
+First, run the two Rosetta XML script on all the inputs (find_hbnet.xml). Second, analyze the output using the filter_networks.ipynb Jupyter notebook. 
+

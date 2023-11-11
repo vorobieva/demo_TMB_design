@@ -1,0 +1,152 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+      <ScoreFunction name="SFX1" weights="../ref2015_faelec145_fasol09_AS80.wts">
+        Reweight scoretype=hbond_lr_bb weight=2. />
+        Reweight scoretype=coordinate_constraint weight=1. />
+        <Reweight scoretype="angle_constraint" weight="1.0" />
+        <Reweight scoretype="atom_pair_constraint" weight="1.0" />
+        <Reweight scoretype="dihedral_constraint" weight="1.0" />
+	Reweight scoretype="fa_elec" weight="1.75" />
+      </ScoreFunction>
+    </SCOREFXNS>
+
+    <RESIDUE_SELECTORS>
+  	Index name="strand1" resnums="7-16" />
+  	Index name="strand2" resnums="20-31" />
+	Index name="strand3" resnums="35-44" />
+	Index name="strand4" resnums="48-59" />
+	Index name="strand5" resnums="63-72" />
+	Index name="strand6" resnums="76-87" />
+	Index name="strand7" resnums="91-100" />
+	Index name="strand8" resnums="104-115" />
+	Index name="strand9" resnums="119-128" />
+	Index name="strand10" resnums="132-143" />
+	Index name="strand11" resnums="147-156" />
+	Index name="strand12" resnums="160-171" />
+
+    </RESIDUE_SELECTORS>
+
+    <TASKOPERATIONS>
+      <ReadResfile name="resfile" filename="core.resfile" />
+      KeepSequenceSymmetry name="keep_seq_sym" setting="true" />
+
+    LinkResidues name="linkres">
+      	LinkGroup group="1"/>
+	LinkGroup group="2"/>
+	LinkGroup group="3"/>
+	LinkGroup group="4"/>
+	LinkGroup group="5"/>
+	LinkGroup group="6"/>
+	LinkGroup group="7,63,119"/>
+	LinkGroup group="8,64,120"/>
+	LinkGroup group="9,65,121"/>
+	LinkGroup group="10,66,122"/>
+	LinkGroup group="11,67,123"/>
+	LinkGroup group="12,68,124"/>
+	LinkGroup group="13,69,125"/>
+	LinkGroup group="14,70,126"/>
+	LinkGroup group="15,71,127"/>
+	LinkGroup group="16,72,128"/>
+	LinkGroup group="19,75,131"/>
+	LinkGroup group="20,76,132"/>
+	LinkGroup group="21,77,133"/>
+	LinkGroup group="22,78,134"/>
+	LinkGroup group="23,79,135"/>
+	LinkGroup group="24,80,136"/>
+	LinkGroup group="25,81,137"/>
+	LinkGroup group="26,82,138"/>
+	LinkGroup group="27,83,139"/>
+	LinkGroup group="28,84,140"/>
+	LinkGroup group="29,85,141"/>
+	LinkGroup group="30,86,142"/>
+	LinkGroup group="31,87,143"/>
+	LinkGroup group="35,91,147"/>
+	LinkGroup group="36,92,148"/>
+	LinkGroup group="37,93,149"/>
+	LinkGroup group="38,94,150"/>
+	LinkGroup group="39,95,151"/>
+	LinkGroup group="40,96,152"/>
+	LinkGroup group="41,97,153"/>
+	LinkGroup group="42,98,154"/>
+	LinkGroup group="43,99,155"/>
+	LinkGroup group="44,100,156"/>
+	LinkGroup group="47,103,159"/>
+	LinkGroup group="48,104,160"/>
+	LinkGroup group="49,105,161"/>
+	LinkGroup group="50,106,162"/>
+	LinkGroup group="51,107,163"/>
+	LinkGroup group="52,108,164"/>
+	LinkGroup group="53,109,165"/>
+	LinkGroup group="54,110,166"/>
+	LinkGroup group="55,111,167"/>
+	LinkGroup group="56,112,168"/>
+	LinkGroup group="57,113,169"/>
+	LinkGroup group="58,114,170"/>
+	LinkGroup group="59,115,171"/>
+	
+	LinkGroup group="32"/>
+	LinkGroup group="33"/>
+	LinkGroup group="34"/>
+	LinkGroup group="60"/>
+	LinkGroup group="61"/>
+	LinkGroup group="62"/>
+	LinkGroup group="88"/>
+	LinkGroup group="89"/>
+	LinkGroup group="90"/>
+	LinkGroup group="116"/>
+	LinkGroup group="117"/>
+	LinkGroup group="118"/>
+	LinkGroup group="144"/>
+	LinkGroup group="145"/>
+	LinkGroup group="146"/>
+
+	LinkGroup group="17"/>
+	LinkGroup group="18"/>
+	LinkGroup group="45"/>
+	LinkGroup group="46"/>
+	LinkGroup group="73"/>
+	LinkGroup group="74"/>
+	LinkGroup group="101"/>
+	LinkGroup group="102"/>
+	LinkGroup group="129"/>
+	LinkGroup group="130"/>
+	LinkGroup group="157"/>
+	LinkGroup group="158"/>
+
+	LinkGroup group="172"/>
+	LinkGroup group="173"/>
+    /LinkResidues>
+
+    </TASKOPERATIONS>
+    <FILTERS>
+      Geometry name=geo omega=165 cart_bonded=20 confidence=0 />
+      ShapeComplementarity name=sc_filter min_sc=0.0 verbose=1 jump=1 write_int_area=1 />
+      Holes name=holes threshold=1.5 confidence=0 />
+      PackStat name=packstat threshold=0.4 confidence=1 />
+      SSPrediction name="sspred" confidence="0" threshold=0.4 use_svm="1" use_probability="1"/>
+
+
+    </FILTERS>
+    <MOVERS>
+      <Dssp name="dssp"/>
+      <FastDesign name="fdesign" task_operations="resfile" cst_file="cst" scorefxn="SFX1" />
+      SetupForSequenceSymmetryMover name="setup_seq_sym" sequence_symmetry_behaviour="keep_seq_sym" >
+    	SequenceSymmetry residue_selectors="strand1,strand5,strand9" />
+    	SequenceSymmetry residue_selectors="strand2,strand6,strand10" />
+	SequenceSymmetry residue_selectors="strand3,strand7,strand11" />
+	SequenceSymmetry residue_selectors="strand4,strand8,strand12" />
+      /SetupForSequenceSymmetryMover>	
+
+    </MOVERS>
+    <APPLY_TO_POSE>
+    </APPLY_TO_POSE>
+    <PROTOCOLS>
+	Add mover_name="setup_seq_sym" />
+      	<Add mover_name="fdesign" />
+      
+      Add filter=holes/>
+      Add filter=packstat/>
+      Add filter=geo/>
+      Add filter_name=sspred />
+    </PROTOCOLS>
+</ROSETTASCRIPTS>

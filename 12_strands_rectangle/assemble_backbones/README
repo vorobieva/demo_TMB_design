@@ -1,0 +1,9 @@
+Backbone assembly using Rosetta BluePrintBDR application. The blueprint corresonding to the 12_strands oval backbones is described in the bp and cst files. 
+
+Run the application using the following command, distributed into 112 independent output folders numbered 0-111 (1 independent CPU process/folder), For a total of 11,200 trajectories sampled.
+/home/av9/Rosetta/main/source/bin/rosetta_scripts.default.linuxgccrelease -database /home/av9/Rosetta/main/database -s ../input.pdb -out:prefix " + directory + "_" + " -parser:protocol ../input.xml -nstruct 100 -rama_map /home/av9/Rosetta/main/database/scoring/score_functions/rama/Rama_XPG_3level.txt > stdout.txt
+
+Analyse the output backbones using the analyze_backbones.ipynb Jupyter notebook. 
+
+Rosetta version used to generate the published designs: 
+2021.18.post.dev+62.master.d8e6d9c d8e6d9c18784cfc5b8708e931b781de7e0278833 git@github.com:RosettaCommons/main.git 2021-05-13T11:34:42

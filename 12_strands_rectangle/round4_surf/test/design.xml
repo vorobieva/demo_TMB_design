@@ -1,0 +1,55 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+      <ScoreFunction name="SFX1" weights="%%wts%%">
+        <Reweight scoretype="hbond_lr_bb" weight="2.0" />
+        Reweight scoretype=coordinate_constraint weight=1. />
+        <Reweight scoretype="angle_constraint" weight="1.0" />
+        <Reweight scoretype="atom_pair_constraint" weight="1.0" />
+        <Reweight scoretype="dihedral_constraint" weight="2.0" />
+      </ScoreFunction>
+    </SCOREFXNS>
+
+    <RESIDUE_SELECTORS>
+    
+
+    </RESIDUE_SELECTORS>>
+
+    <TASKOPERATIONS>
+      <ReadResfile name="resfile" filename="../surface.resfile" />
+        # as defined in LayerDesign
+
+    </TASKOPERATIONS>
+    <FILTERS>
+      Geometry name=geo omega=165 cart_bonded=20 confidence=0 />
+      ShapeComplementarity name=sc_filter min_sc=0.0 verbose=1 jump=1 write_int_area=1 />
+      Holes name=holes threshold=1.5 confidence=0 />
+      PackStat name=packstat threshold=0.4 confidence=1 />
+      SSPrediction name="sspred" confidence="0" threshold=0.4 use_svm="1" use_probability="1"/>
+
+    </FILTERS>
+    <MOVERS>
+      <Dssp name="dssp"/>
+      <SetupForSymmetry name="setup_symm" set_global_symmetry_at_parsetime="1" definition="../1_input_0085_tetramer_AB_0001_3_0001_0001_0003.symm" preserve_datacache="1" keep_pdb_info_labels="1" />
+      <FastDesign name="fdesign" cst_file="../cst" task_operations="resfile" scorefxn="SFX1" />
+
+      MutateResidue name="Pro27" target="27A" new_res="PRO" />
+      MutateResidue name="Pro45" target="45A" new_res="PRO" />
+      MutateResidue name="Pro85" target="85A" new_res="PRO" />
+
+    </MOVERS>
+    <APPLY_TO_POSE>
+    </APPLY_TO_POSE>
+    <PROTOCOLS>
+      Add mover_name="Pro27" />
+      Add mover_name="Pro45" />
+      Add mover_name="Pro85" />
+
+      <Add mover_name="setup_symm"/>
+      <Add mover_name="fdesign" />
+      
+      Add filter=holes/>
+      Add filter=packstat/>
+      Add filter=geo/>
+      Add filter_name=sspred />
+    </PROTOCOLS>
+</ROSETTASCRIPTS>

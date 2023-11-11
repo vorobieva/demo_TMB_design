@@ -1,0 +1,61 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+      <ScoreFunction name="SFX1" weights="../ref2015_GA7_fasol0425.wts">
+        <Reweight scoretype="hbond_lr_bb" weight="2.0" />
+        Reweight scoretype=coordinate_constraint weight=1. />
+        <Reweight scoretype="angle_constraint" weight="1.0" />
+        <Reweight scoretype="atom_pair_constraint" weight="1.0" />
+        <Reweight scoretype="dihedral_constraint" weight="1.0" />
+	Reweight scoretype="aa_composition" weight="1.0" />
+	Set aa_composition_setup_file="surface.comp" />
+      </ScoreFunction>
+    </SCOREFXNS>
+
+    <RESIDUE_SELECTORS>
+
+    </RESIDUE_SELECTORS>>
+
+    <TASKOPERATIONS>
+      <ReadResfile name="resfile" filename="../surf.resfile" />
+
+    </TASKOPERATIONS>
+    <FILTERS>
+
+    </FILTERS>
+    <MOVERS>
+      <FastDesign name="fdesign" cst_file="../cst" task_operations="resfile" scorefxn="SFX1" />
+      <MutateResidue name="Tyr15" target="15A" new_res="TYR" />
+      <MutateResidue name="Tyr43" target="43A" new_res="TYR" />
+      MutateResidue name="Tyr69" target="69A" new_res="TYR" />
+      <MutateResidue name="Tyr101" target="101A" new_res="TYR" />
+      <MutateResidue name="Tyr133" target="133A" new_res="TYR" />
+      MutateResidue name="Tyr159" target="159A" new_res="TYR" />
+
+      <MutateResidue name="Tyr29" target="29A" new_res="TYR" />
+      <MutateResidue name="Tyr57" target="57A" new_res="TYR" />
+      <MutateResidue name="Tyr87" target="87A" new_res="TYR" />
+      <MutateResidue name="Tyr119" target="119A" new_res="TYR" />
+      <MutateResidue name="Tyr147" target="147A" new_res="TYR" />
+      MutateResidue name="Tyr175" target="175A" new_res="TYR" />
+
+    </MOVERS>
+    <APPLY_TO_POSE>
+    </APPLY_TO_POSE>
+    <PROTOCOLS>
+      <Add mover_name="Tyr15" />
+      <Add mover_name="Tyr43" />
+      Add mover_name="Tyr69" />
+      <Add mover_name="Tyr101" />
+      <Add mover_name="Tyr133" />
+      Add mover_name="Tyr159" />
+
+      <Add mover_name="Tyr29" />
+      <Add mover_name="Tyr57" />
+      <Add mover_name="Tyr87" />
+      <Add mover_name="Tyr119" />
+      <Add mover_name="Tyr147" />
+      Add mover_name="Tyr175" />
+      <Add mover_name="fdesign" />
+      
+    </PROTOCOLS>
+</ROSETTASCRIPTS>

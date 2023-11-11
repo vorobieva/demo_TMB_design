@@ -1,0 +1,79 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+      <ScoreFunction name="SFX1" weights="../ref2015_F35.wts">
+        Reweight scoretype=hbond_lr_bb weight=2. />
+        Reweight scoretype=coordinate_constraint weight=1. />
+        <Reweight scoretype="angle_constraint" weight="1.0" />
+        <Reweight scoretype="atom_pair_constraint" weight="1.0" />
+        <Reweight scoretype="dihedral_constraint" weight="1.0" />
+	Reweight scoretype="fa_elec" weight="1.75" />
+      </ScoreFunction>
+    </SCOREFXNS>
+
+    <RESIDUE_SELECTORS>
+  	Index name="strand1" resnums="7-16" />
+  	Index name="strand2" resnums="20-31" />
+	Index name="strand3" resnums="35-44" />
+	Index name="strand4" resnums="48-59" />
+	Index name="strand5" resnums="63-72" />
+	Index name="strand6" resnums="76-87" />
+	Index name="strand7" resnums="91-100" />
+	Index name="strand8" resnums="104-115" />
+	Index name="strand9" resnums="119-128" />
+	Index name="strand10" resnums="132-143" />
+	Index name="strand11" resnums="147-156" />
+	Index name="strand12" resnums="160-171" />
+
+    </RESIDUE_SELECTORS>
+
+    <TASKOPERATIONS>
+      <ReadResfile name="resfile" filename="surface.resfile" />
+      KeepSequenceSymmetry name="keep_seq_sym" setting="true" />
+
+    </TASKOPERATIONS>
+    <FILTERS>
+      Geometry name=geo omega=165 cart_bonded=20 confidence=0 />
+      ShapeComplementarity name=sc_filter min_sc=0.0 verbose=1 jump=1 write_int_area=1 />
+      Holes name=holes threshold=1.5 confidence=0 />
+      PackStat name=packstat threshold=0.4 confidence=1 />
+      SSPrediction name="sspred" confidence="0" threshold=0.4 use_svm="1" use_probability="1"/>
+
+
+    </FILTERS>
+    <MOVERS>
+      <Dssp name="dssp"/>
+      <FastDesign name="fdesign" cst_file="../cst" task_operations="resfile" scorefxn="SFX1" />
+      SetupForSequenceSymmetryMover name="setup_seq_sym" sequence_symmetry_behaviour="keep_seq_sym" >
+    	SequenceSymmetry residue_selectors="strand1,strand5,strand9" />
+    	SequenceSymmetry residue_selectors="strand2,strand6,strand10" />
+	SequenceSymmetry residue_selectors="strand3,strand7,strand11" />
+	SequenceSymmetry residue_selectors="strand4,strand8,strand12" />
+      /SetupForSequenceSymmetryMover>	
+      <MutateResidue name="Tyr15" target="15A" new_res="TYR" />
+      <MutateResidue name="Tyr43" target="43A" new_res="TYR" />
+      <MutateResidue name="Trp71" target="71A" new_res="TRP" />
+      <MutateResidue name="Tyr101" target="101A" new_res="TYR" />
+      <MutateResidue name="Tyr133" target="133A" new_res="TYR" />
+      <MutateResidue name="Trp161" target="161A" new_res="TRP" />
+
+      <MutateResidue name="Tyr175" target="175A" new_res="TYR" />
+    </MOVERS>
+    <APPLY_TO_POSE>
+    </APPLY_TO_POSE>
+    <PROTOCOLS>
+	Add mover_name="setup_seq_sym" />
+      <Add mover_name="Tyr15" />
+      <Add mover_name="Tyr43" />
+      <Add mover_name="Trp71" />
+      <Add mover_name="Tyr101" />
+      <Add mover_name="Tyr133" />
+      <Add mover_name="Trp161" />
+      <Add mover_name="Tyr175" />
+      	<Add mover_name="fdesign" />
+      
+      Add filter=holes/>
+      Add filter=packstat/>
+      Add filter=geo/>
+      Add filter_name=sspred />
+    </PROTOCOLS>
+</ROSETTASCRIPTS>
