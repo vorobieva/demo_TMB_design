@@ -1,0 +1,76 @@
+<ROSETTASCRIPTS>
+	<SCOREFXNS>
+           <ScoreFunction name="SFXN1" weights="../fldsgn_cen_omega02.wts" >
+                <Reweight scoretype="hbond_sr_bb" weight="1.0" />
+                <Reweight scoretype="hbond_lr_bb" weight="1.0" />
+		<Reweight scoretype="atom_pair_constraint" weight="1.0" />
+		<Reweight scoretype="angle_constraint" weight="1.0" />
+                <Reweight scoretype="dihedral_constraint" weight="1.0" />
+                <Reweight scoretype="coordinate_constraint" weight="1.0" />
+           </ScoreFunction>
+	</SCOREFXNS>
+
+    	<FILTERS>
+
+                //////////////////////////////////////
+                // SHEET-BUILDING //
+                ////////////////////////////////////
+		<ScoreType name="cen_total" scorefxn="SFXN1" score_type="total_score" threshold="1000000" />
+		<ScoreType name="vdw" scorefxn="SFXN1" score_type="vdw" threshold="1000000" />
+		<ScoreType name="rg" scorefxn="SFXN1" score_type="rg" threshold="1000000" />
+		<ScoreType name="cen_rama" scorefxn="SFXN1" score_type="rama" threshold="1000000" />
+		<ScoreType name="sspair" scorefxn="SFXN1" score_type="ss_pair" threshold="1000000" />
+		<ScoreType name="rsigma" scorefxn="SFXN1" score_type="rsigma" threshold="1000000" />
+
+	</FILTERS>
+        <TASKOPERATIONS>
+        </TASKOPERATIONS>
+	<MOVERS>
+		// General movers//
+                <DumpPdb name="pdb1" fname="iter1.pdb" scorefxn="SFXN1" />
+	        <Dssp name="dssp"/>
+
+                <SwitchResidueTypeSetMover name="fullatom" set="fa_standard"/>
+                <SwitchResidueTypeSetMover name="cent" set="centroid"/>
+		<MakePolyX name="polyval" aa="VAl" keep_pro="1" />
+
+
+               //////////////////////////////////////
+                // SHEET-BUILDING //
+                ////////////////////////////////////
+                <SetSecStructEnergies name="set_ssene1" scorefxn="SFXN1" blueprint="../bp_oval" />
+                <BluePrintBDR name="bdr1" scorefxn="SFXN1" use_abego_bias="1" blueprint="../bp_oval" constraint_file="../cst_oval"/>
+		<ConstraintSetMover name="addcst1" add_constraints="1" cst_file="../cst_oval"/>
+                <MinMover name="min1" scorefxn="SFXN1" chi="1" bb="1" type="dfpmin_armijo_nonmonotone_atol" tolerance="0.0001"/>
+		<MinMover name="cart_min1" scorefxn="SFXN1" type="lbfgs_armijo_nonmonotone" tolerance="0.0001" max_iter="1000" chi="0" bb="1" bondangle="1" bondlength="1" cartesian="1"/>
+                <ParsedProtocol name="cenmin1" >
+                  <Add mover_name="cent" />
+                  <Add mover_name="addcst1" />
+                  <Add mover_name="min1" />
+                  <Add mover_name="fullatom" />
+                </ParsedProtocol>
+                <ParsedProtocol name="bdr1ss" >
+                  <Add mover_name="bdr1" />
+                  <Add mover_name="cenmin1" />
+                  <Add mover_name="dssp" />
+                </ParsedProtocol>
+
+	</MOVERS>
+
+	<APPLY_TO_POSE>
+	</APPLY_TO_POSE>
+
+	<PROTOCOLS>
+                Add mover_name=set_ssene1 />
+                <Add mover_name="bdr1ss" />
+                <Add mover_name="fullatom" />
+		<Add filter_name="cen_total" />
+		<Add filter_name="vdw" />
+		<Add filter_name="rg" />
+		<Add filter_name="cen_rama" />
+		<Add filter_name="sspair" />
+		<Add filter_name="rsigma" />
+                <Add mover_name="pdb1" />
+
+	</PROTOCOLS>
+</ROSETTASCRIPTS>

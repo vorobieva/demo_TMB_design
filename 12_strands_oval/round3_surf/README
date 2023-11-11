@@ -1,0 +1,13 @@
+Second round of combinatorial sequence design of the lipid-exposed surface. 
+
+To select an energy function, run the design XML script with all scoring weights provided in test/ on a representative model. Analyze the results with the sequence_stats.ipynb Jupyter notebook.
+
+For each input, generate 10 models using the following Rosetta command:
+cd $LINE && /software/rosetta/latest/bin/rosetta_scripts -s ../$LINE.pdb -parser:protocol ../design.xml -nstruct 10 > stdout.txt
+where $LINE is the name of the input model. 
+
+Analyze the output by select the stable mortise-tenon motifs after side-chain repacking using the analyze_round3_surf.py script and analyse_round3_surf.ipynb Jupyter notebook. 
+
+Rosetta version used to generate the pubmished designs:
+2022.16+master.839b00f 839b00f59d92ff5270c37073376bd37d27064c7e git@github.com:RosettaCommons/main.git 2022-04-19T17:48:30
+ 

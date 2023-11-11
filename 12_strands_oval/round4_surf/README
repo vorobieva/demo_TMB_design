@@ -1,0 +1,15 @@
+Third round of combinatorial sequence design of the lipid-exposed surface, focusing on fine-tuning the hydrophobicity of the surface with Phe and beta-branched amino acids. 
+
+To select an energy function fine-tuned for the blueprint, run the design XML script with all the scoring weights provided in test/ on a representative model. Analyze the output using the sequence_stats.ipynb Jupyter notebook. 
+
+Prepare model-specific resfiles (fixes the Ser, Gly and Thr amino acids previously designed on the lipid-exposed surface) use the prepare_resiles.py script. 
+
+For each input, generate 10 models using the following Rosetta command:
+cd $LINE && /software/rosetta/latest/bin/rosetta_scripts -s ../$LINE.pdb -parser:protocol ../design.xml -nstruct 10 > stdout.txt
+where $LINE is the name of the input model. 
+
+Analyze the output by select the stable mortise-tenon motifs after side-chain repacking using the analyse_round4.ipynb Jupyter notebook. 
+
+Rosetta version used to generate the pubmished designs:
+2022.16+master.839b00f 839b00f59d92ff5270c37073376bd37d27064c7e git@github.com:RosettaCommons/main.git 2022-04-19T17:48:30
+ 

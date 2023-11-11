@@ -1,0 +1,10 @@
+First filter the designs with Tango (aggregation predictor) and RaptorX (secondary structure predictor). 
+
+Run RaptorX: 
+for file in *.fasta; do /data/brussel/vo/000/bvo00014/RaptorX_Property_Fast/oneline_command.sh $file 1 0 ; done
+
+Run Tango:
+for file in *.fasta ; do echo "${file%.fasta} N N 7.0 298 0.02 $(echo $seq | awk -F: 'NR==2 {print $1}' ${file})" >> tango.list ; done
+/data/brussel/vo/000/bvo00014/bin/tango_x86_64_release -inputfile=tango.list
+
+Finally, analyze the results using the design_properties.ipynb Jupyter notebook. Final designs are validated using AlphaFold (single-sequence mode, 48 recycles). 

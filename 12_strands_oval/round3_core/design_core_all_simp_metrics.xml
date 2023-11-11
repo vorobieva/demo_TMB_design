@@ -1,0 +1,89 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+      <ScoreFunction name="SFXN1" weights="../ref2015_faelec145_fasol09_AS80.wts">
+        <Reweight scoretype="angle_constraint" weight="1.0" />
+        <Reweight scoretype="atom_pair_constraint" weight="1.0" />
+        <Reweight scoretype="dihedral_constraint" weight="1.0" />
+	Reweight scoretype="fa_elec" weight="1.75" />
+	Reweight scoretype="fa_sol" weight="0.75" />
+        Reweight scoretype="lk_ball_wtd" weight="0.75" />
+      </ScoreFunction>
+      <ScoreFunction name="SFXN2" weights="ref2015.wts" >
+	<Reweight scoretype="fa_sol" weight="0.75" />
+	<Reweight scoretype="lk_ball_wtd" weight="0.75" />
+      </ScoreFunction>
+    </SCOREFXNS>
+
+    <RESIDUE_SELECTORS>
+       # The Tyrs and interacting negatively charged residues are exceptions to the layer definition
+	<ResiduePDBInfoHasLabel name="tyrMortise" property="HBNet" />
+	<Not name="not_tyrMortise" selector="tyrMortise" />
+	<Index name="poss_Y" resnums="10,96" />
+        <ResidueName name="tyr" residue_name3="TYR" />
+        <And name="Y" selectors="poss_Y,tyr" />
+	<Not name="NotY" selector="Y"/>
+	<And name="MotifNotY" selectors="tyrMortise,NotY" />
+
+    </RESIDUE_SELECTORS>>
+
+    <TASKOPERATIONS>
+      <ReadResfile name="resfile" filename="core.resfile" />
+      KeepSequenceSymmetry name="keep_seq_sym" setting="true" />
+    </TASKOPERATIONS>
+    <FILTERS>
+
+    </FILTERS>
+
+    <SIMPLE_METRICS>
+      <TotalEnergyMetric name="totE_motif" residue_selector="tyrMortise" use_native="0" scoretype="total_score" scorefxn="SFXN1" />
+      <TotalEnergyMetric name="totH_motif" residue_selector="tyrMortise" use_native="0" scoretype="hbond_sc" scorefxn="SFXN1" />
+      <TotalEnergyMetric name="totE_DE" residue_selector="MotifNotY" use_native="0" scoretype="total_score" scorefxn="SFXN1" />
+      <TotalEnergyMetric name="totH_DE" residue_selector="MotifNotY" use_native="0" scoretype="hbond_sc" scorefxn="SFXN1" />
+      <SelectedResidueCountMetric name="nMotif" residue_selector="tyrMortise" />
+      <SelectedResidueCountMetric name="nMotifNotY" residue_selector="MotifNotY" />
+    </SIMPLE_METRICS>
+
+    <MOVERS>
+      AddCompositionConstraintMover name="addcomp1" filename="../surface.comp" selector="surfaceRes" />
+      <Dssp name="dssp"/>
+      <FastDesign name="fdesign" cst_file="cst" task_operations="resfile" scorefxn="SFXN1" />
+
+      <RunSimpleMetrics name="totE_metrics" metrics="totE_motif" prefix="totE_" />
+      <RunSimpleMetrics name="totH_metrics" metrics="totH_motif" prefix="totH_" />
+      <RunSimpleMetrics name="DEE_metrics" metrics="totE_DE" prefix="DEE_" />
+      <RunSimpleMetrics name="DEH_metrics" metrics="totH_DE" prefix="DEH_" />
+      <RunSimpleMetrics name="nresMotif" metrics="nMotif" prefix="nres_" />
+      <RunSimpleMetrics name="nresMotifNotY" metrics="nMotifNotY" prefix="nresDE_" />
+
+    </MOVERS>
+    <APPLY_TO_POSE>
+    </APPLY_TO_POSE>
+    <PROTOCOLS>
+      Add mover_name="Tyr15" />
+      Add mover_name="Tyr43" />
+      Add mover_name="Tyr71" />
+      Add mover_name="Tyr99" />
+      Add mover_name="Tyr127" />
+      Add mover_name="Tyr155" />
+
+      Add mover_name="Asp19" />
+      Add mover_name="Asp47" />
+      Add mover_name="Asp75" />
+      Add mover_name="Asp103" />
+      Add mover_name="Asp131" />
+      Add mover_name="Asp159" />
+      Add mover_name="Pro67" />
+      Add mover_name="addcomp1" />
+      <Add mover_name="fdesign" />
+      <Add mover_name="totE_metrics"/>
+      <Add mover_name="totH_metrics"/>
+      <Add mover_name="DEE_metrics"/>
+      <Add mover_name="DEH_metrics"/>
+      <Add mover_name="nresMotif"/>
+      <Add mover_name="nresMotifNotY"/>
+      Add filter=holes/>
+      Add filter=packstat/>
+
+    </PROTOCOLS>
+    <OUTPUT scorefxn="SFXN1" />
+</ROSETTASCRIPTS>

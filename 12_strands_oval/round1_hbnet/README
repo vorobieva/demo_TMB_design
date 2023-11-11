@@ -1,0 +1,9 @@
+Design the folding mortise-tenon motif using the HBNet application. Here, 2 different motif positions are sampled. 
+
+For each input backbone, run the following command:
+while read line ; do cd $line/ && /software/rosetta/latest/bin/rosetta_scripts -s ../$line.pdb -beta_nov16 -parser:protocol ../hbnet.xml && cd .. ; done < task.list
+
+Analyze the output using the get_all_motifs.py script.
+
+Rosetta version used to generate the published designs: 
+2021.18.post.dev+62.master.d8e6d9c d8e6d9c18784cfc5b8708e931b781de7e0278833 git@github.com:RosettaCommons/main.git 2021-05-13T11:34:42

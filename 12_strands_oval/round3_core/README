@@ -1,0 +1,11 @@
+First round of combinatorial sequence design of the residues facing the pore. 
+
+For each input model, generate 10 ouputs by running the following command: 
+cd $LINE && /software/rosetta/latest/bin/rosetta_scripts -s ${LINE}.pdb -parser:protocol ../design_core_all_simp_metrics.xml -nstruct 10 > stdout.txt
+Where $LINE is the name of the input model.
+
+The input cst and core.resfile files should be customized for each input (an example is given here).
+
+Rosetta version used to generate the published designs:
+2021.18.post.dev+62.master.d8e6d9c d8e6d9c18784cfc5b8708e931b781de7e0278833 git@github.com:RosettaCommons/main.git 2021-05-13T11:34:42
+

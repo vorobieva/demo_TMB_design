@@ -1,0 +1,10 @@
+The highest-ranked backbones (coarse grain models) undergo full-atom refinement prior to placing key interactions. 
+
+For each input backbone, generate 5 refined models using the following Rosetta command:
+cd $LINE && /home/av9/Rosetta/main/source/bin/rosetta_scripts.default.linuxgccrelease -database /home/av9/Rosetta/main/database -s ../$LINE.pdb -parser:protocol ../design.xml -nstruct 5 > stdout.txt
+where $LINE is the name of the input backbone.
+
+Rosetta version used to generated the published designs:
+2021.18.post.dev+62.master.d8e6d9c d8e6d9c18784cfc5b8708e931b781de7e0278833 git@github.com:RosettaCommons/main.git 2021-05-13T11:34:42
+
+Analyze the output with the ../assemble_backbones/analyze_backbones.ipynb Jupyter notebook. 
