@@ -1,0 +1,136 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+      <ScoreFunction name="SFX1" weights="../ref2015_faelec14_fasol09_AS25.wts">
+        Reweight scoretype=hbond_lr_bb weight=2. />
+        Reweight scoretype=coordinate_constraint weight=1. />
+        <Reweight scoretype="angle_constraint" weight="1.0" />
+        <Reweight scoretype="atom_pair_constraint" weight="1.0" />
+        <Reweight scoretype="dihedral_constraint" weight="1.0" />
+	Reweight scoretype="fa_elec" weight="1.75" />
+      </ScoreFunction>
+    </SCOREFXNS>
+
+    <RESIDUE_SELECTORS>
+        # Pro, cys and Gly are exception to the layer definition
+        <ResidueName name="CPG" residue_name3="CYS,PRO,GLY" /> //selects CPG residues
+            <Not name="not_CPG" selector="CPG" />
+
+       # The Tyrs and interacting negatively charged residues are exceptions to the layer definition
+	<ResiduePDBInfoHasLabel name="tyrMortise" property="HBNet" />
+			<Not name="not_tyrMortise" selector="tyrMortise" />
+
+        # turns have special definition in the resfile
+        <Index name="betaTurns" resnums="32,62,81,94" />
+                        <Not name="not_turns" selector="betaTurns" />
+
+        # define the layers
+        <Layer name="coreRes" select_core="true" use_sidechain_neighbors="true" core_cutoff="2.1" surface_cutoff="1.0"/>
+        <Layer name="bdryRes" select_boundary="true" use_sidechain_neighbors="true" core_cutoff="2.1" surface_cutoff="1.0"/>
+        <Layer name="surfaceRes" select_surface="true" use_sidechain_neighbors="true" core_cutoff="2.1" surface_cutoff="1.0"/>      
+
+        # define secondary structure
+        <SecondaryStructure name="helix" ss="H"  pose_secstruct="LLLLLEEEEEEEEEEELLLEEEEEEEEEEEEELLEEEEEEEEEELLLEEEEEEEEEEEEEEELLEEEEEEEEEEEELLLEEEEEEEEEEEEEEELLEEEEEEEEEELLLEEEEEEEEEEEEEL"/>
+        <SecondaryStructure name="strand" ss="E"  pose_secstruct="LLLLLEEEEEEEEEEELLLEEEEEEEEEEEEELLEEEEEEEEEELLLEEEEEEEEEEEEEEELLEEEEEEEEEEEELLLEEEEEEEEEEEEEEELLEEEEEEEEEELLLEEEEEEEEEEEEEL"/>
+        <SecondaryStructure name="loop" ss="L"  pose_secstruct="LLLLLEEEEEEEEEEELLLEEEEEEEEEEEEELLEEEEEEEEEELLLEEEEEEEEEEEEEEELLEEEEEEEEEEEELLLEEEEEEEEEEEEEEELLEEEEEEEEEELLLEEEEEEEEEEEEEL"/>
+
+        # combine the selectors in the same way as LayerDesign
+            And name="coreAll" selectors="coreRes,all,not_CPG,not_trp_corner" />
+            <And name="coreH" selectors="coreRes,helix,not_CPG,not_turns,not_tyrMortise" />
+            <And name="coreE" selectors="coreRes,strand,not_CPG,not_turns,not_tyrMortise" />
+            <And name="coreL" selectors="coreRes,loop,not_turns" />
+            And name="boundAll" selectors="boundRes,all,not_CPG,not_trp_corner" />
+            <And name="boundH" selectors="bdryRes,helix,not_CPG,not_turns,not_tyrMortise" />
+            <And name="boundE" selectors="bdryRes,strand,not_CPG,not_turns,not_tyrMortise" />
+            <And name="boundL" selectors="bdryRes,loop,not_turns" />
+            And name="surfAll" selectors="surfRes,all,not_CPG,not_trp_corner" />
+            <And name="surfH" selectors="surfaceRes,helix,not_CPG,not_turns,not_tyrMortise" />
+            <And name="surfE" selectors="surfaceRes,strand,not_CPG,not_turns,not_tyrMortise" />
+            <And name="surfL" selectors="surfaceRes,loop,not_turns" />
+
+    </RESIDUE_SELECTORS>>
+
+    <TASKOPERATIONS>
+      <ReadResfile name="resfile" filename="core.resfile" />
+        # as defined in LayerDesign
+            <OperateOnResidueSubset name="design_helixCore_AA" selector="coreH" >
+            <RestrictAbsentCanonicalAASRLT aas="NTEDARKQS"/>
+            </OperateOnResidueSubset>
+            <OperateOnResidueSubset name="design_strandCore_AA" selector="coreE" >
+            <RestrictAbsentCanonicalAASRLT aas="ADEFHKLMNQRSTVW"/> #allow all amino acids except IPC
+            </OperateOnResidueSubset>
+            <OperateOnResidueSubset name="design_loopCore_AA" selector="coreL" >
+            <RestrictAbsentCanonicalAASRLT aas="NTEDARKQSPG"/>
+            </OperateOnResidueSubset>
+
+            <OperateOnResidueSubset name="design_helixBound_AA" selector="boundH" >
+            <RestrictAbsentCanonicalAASRLT aas="ADEIKLMNQSTVYW"/>
+            </OperateOnResidueSubset>
+            <OperateOnResidueSubset name="design_strandBound_AA" selector="boundE" >
+            <RestrictAbsentCanonicalAASRLT aas="AEDFIKLMNQRSTVY"/>
+            </OperateOnResidueSubset>
+            <OperateOnResidueSubset name="design_loopBound_AA" selector="boundL" >
+            <RestrictAbsentCanonicalAASRLT aas="ADEFGIKLMNPQRSTVY"/>
+        </OperateOnResidueSubset>
+
+            <OperateOnResidueSubset name="repack_helixSurf_AA" selector="surfH" >
+            <RestrictToRepackingRLT/>
+            </OperateOnResidueSubset>
+            <OperateOnResidueSubset name="repack_strandSurf_AA" selector="surfE" >
+            <RestrictToRepackingRLT/>
+            </OperateOnResidueSubset>
+            <OperateOnResidueSubset name="repack_loopSurf_AA" selector="surfL" >
+            <RestrictToRepackingRLT/>
+            </OperateOnResidueSubset>
+
+        # limit CPG and Tyr mortise to repacking
+        <OperateOnResidueSubset name="repack_CPG" selector="CPG" >
+                <RestrictToRepackingRLT/>
+            </OperateOnResidueSubset>
+
+        <OperateOnResidueSubset name="repack_tyr" selector="tyrMortise" >
+                <RestrictToRepackingRLT/>
+            </OperateOnResidueSubset>
+
+        <ExtraRotamersGeneric name="ex1_ex2" ex1="1" ex2="1"/>
+
+        <InteractingRotamerExplosion name="rotexpl" ex_level="4" score_cutoff="0.5" target_seqpos="5B" debug="0" />
+
+    </TASKOPERATIONS>
+    <FILTERS>
+      Geometry name=geo omega=165 cart_bonded=20 confidence=0 />
+      ShapeComplementarity name=sc_filter min_sc=0.0 verbose=1 jump=1 write_int_area=1 />
+      Holes name=holes threshold=1.5 confidence=0 />
+      PackStat name=packstat threshold=0.4 confidence=1 />
+      SSPrediction name="sspred" confidence="0" threshold=0.4 use_svm="1" use_probability="1"/>
+
+
+    </FILTERS>
+    <MOVERS>
+      AddCompositionConstraintMover name="addcomp1" filename="../surface.comp" selector="surfaceRes" />
+      <Dssp name="dssp"/>
+      <FastDesign name="fdesign" cst_file="cst" task_operations="resfile" scorefxn="SFX1" />
+
+      <MutateResidue name="Ala111" target="111A" new_res="ALA" />
+      MutateResidue name="Tyr68" target="68A" new_res="TYR" />
+      MutateResidue name="Pro60" target="60A" new_res="PRO" />
+      MutateResidue name="Pro83" target="83A" new_res="PRO" />
+      MutateResidue name="Pro67" target="67A" new_res="PRO" />
+
+    </MOVERS>
+    <APPLY_TO_POSE>
+    </APPLY_TO_POSE>
+    <PROTOCOLS>
+      <Add mover_name="Ala111" />
+      Add mover_name="Tyr68" />
+      Add mover_name="Pro60" />
+      Add mover_name="Pro83" />
+      Add mover_name="Pro67" />
+      Add mover_name="addcomp1" />
+      <Add mover_name="fdesign" />
+      
+      Add filter=holes/>
+      Add filter=packstat/>
+      Add filter=geo/>
+      Add filter_name=sspred />
+    </PROTOCOLS>
+</ROSETTASCRIPTS>

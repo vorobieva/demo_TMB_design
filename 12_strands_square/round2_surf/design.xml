@@ -1,0 +1,89 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+      <ScoreFunction name="SFX1" weights="beta_nov15.wts">
+        Reweight scoretype="hbond_lr_bb" weight="2.0" />
+        Reweight scoretype=coordinate_constraint weight=1. />
+        <Reweight scoretype="angle_constraint" weight="1.0" />
+        <Reweight scoretype="atom_pair_constraint" weight="1.0" />
+        <Reweight scoretype="dihedral_constraint" weight="2.0" />
+      </ScoreFunction>
+    </SCOREFXNS>
+
+    <RESIDUE_SELECTORS>
+    
+
+    </RESIDUE_SELECTORS>>
+
+    <TASKOPERATIONS>
+      <ReadResfile name="resfile" filename="../surf.resfile" />
+        # as defined in LayerDesign
+
+    </TASKOPERATIONS>
+    <FILTERS>
+      Geometry name=geo omega=165 cart_bonded=20 confidence=0 />
+      ShapeComplementarity name=sc_filter min_sc=0.0 verbose=1 jump=1 write_int_area=1 />
+      Holes name=holes threshold=1.5 confidence=0 />
+      PackStat name=packstat threshold=0.4 confidence=1 />
+      SSPrediction name="sspred" confidence="0" threshold=0.4 use_svm="1" use_probability="1"/>
+
+    </FILTERS>
+    <MOVERS>
+      <Dssp name="dssp"/>
+      <FastDesign name="fdesign" cst_file="../cst" task_operations="resfile" scorefxn="SFX1" />
+
+      <MutateResidue name="Tyr15" target="15A" new_res="TYR" />
+      <MutateResidue name="Tyr29" target="29A" new_res="TYR" />
+      <MutateResidue name="Tyr41" target="41A" new_res="TYR" />
+      <MutateResidue name="Trp43" target="43A" new_res="TRP" />
+      <MutateResidue name="Tyr57" target="57A" new_res="TYR" />
+      <MutateResidue name="Tyr71" target="71A" new_res="TYR" />
+      <MutateResidue name="Tyr87" target="87A" new_res="TYR" />
+      <MutateResidue name="Tyr101" target="101A" new_res="TYR" />
+      <MutateResidue name="Trp103" target="103A" new_res="TRP" />
+      <MutateResidue name="Tyr119" target="119A" new_res="TYR" />
+      <MutateResidue name="Tyr133" target="133A" new_res="TYR" />
+      <MutateResidue name="Tyr147" target="147A" new_res="TYR" />
+      <MutateResidue name="Tyr159" target="159A" new_res="TYR" />
+      <MutateResidue name="Trp161" target="161A" new_res="TRP" />
+      <MutateResidue name="Tyr175" target="175A" new_res="TYR" />
+      <MutateResidue name="Asn19" target="19A" new_res="ASN" />
+      <MutateResidue name="Asn49" target="49A" new_res="ASN" />
+      <MutateResidue name="Asn75" target="75A" new_res="ASN" />
+      <MutateResidue name="Asn109" target="109A" new_res="ASN" />
+      <MutateResidue name="Asn137" target="137A" new_res="ASN" />
+      <MutateResidue name="Asn167" target="167A" new_res="ASN" />
+
+    </MOVERS>
+    <APPLY_TO_POSE>
+    </APPLY_TO_POSE>
+    <PROTOCOLS>
+      <Add mover_name="Tyr15" />
+      <Add mover_name="Tyr29" />
+      <Add mover_name="Tyr41" />
+      <Add mover_name="Trp43" />
+      <Add mover_name="Tyr57" />
+      <Add mover_name="Tyr71" />
+      <Add mover_name="Tyr87" />
+      <Add mover_name="Tyr101" />
+      <Add mover_name="Trp103" />
+      <Add mover_name="Tyr119" />
+      <Add mover_name="Tyr133" />
+      <Add mover_name="Tyr147" />
+      <Add mover_name="Tyr159" />
+      <Add mover_name="Trp161" />
+      <Add mover_name="Tyr175" />
+      <Add mover_name="Asn19" />
+      <Add mover_name="Asn49" />
+      <Add mover_name="Asn75" />
+      <Add mover_name="Asn109" />
+      <Add mover_name="Asn137" />
+      <Add mover_name="Asn167" />
+
+      <Add mover_name="fdesign" />
+      
+      Add filter=holes/>
+      Add filter=packstat/>
+      Add filter=geo/>
+      Add filter_name=sspred />
+    </PROTOCOLS>
+</ROSETTASCRIPTS>

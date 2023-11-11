@@ -1,0 +1,41 @@
+<ROSETTASCRIPTS>
+    <SCOREFXNS>
+      <ScoreFunction name="SFX1" weights="../ref2015_F6.wts">
+        <Reweight scoretype="hbond_lr_bb" weight="2.0" />
+        Reweight scoretype=coordinate_constraint weight=1. />
+        <Reweight scoretype="angle_constraint" weight="1.0" />
+        <Reweight scoretype="atom_pair_constraint" weight="1.0" />
+        <Reweight scoretype="dihedral_constraint" weight="1.0" />
+	Reweight scoretype="aa_composition" weight="1.0" />
+	Set aa_composition_setup_file="surface.comp" />
+      </ScoreFunction>
+    </SCOREFXNS>
+
+    <RESIDUE_SELECTORS>	
+    <ResidueName name="GSTA" residue_names="GLY,THR,SER" residue_name3="ALA" />
+    <ResidueName name="VL" residue_names="LEU" residue_name3="VAL" />
+    </RESIDUE_SELECTORS>>
+
+    <TASKOPERATIONS>
+      <ReadResfile name="resfile" filename="../surf.resfile" />
+      <OperateOnResidueSubset name="repack_GSTA" selector="GSTA" >
+       <RestrictToRepackingRLT />
+      </OperateOnResidueSubset>
+      <OperateOnResidueSubset name="design_VL" selector="VL" >
+       <RestrictAbsentCanonicalAASRLT aas="VLF"/>
+      </OperateOnResidueSubset>
+    </TASKOPERATIONS>
+    <FILTERS>
+
+    </FILTERS>
+    <MOVERS>
+      <FastDesign name="fdesign" cst_file="../cst" task_operations="resfile,repack_GSTA,design_VL" scorefxn="SFX1" />
+
+    </MOVERS>
+    <APPLY_TO_POSE>
+    </APPLY_TO_POSE>
+    <PROTOCOLS>
+      <Add mover_name="fdesign" />
+      
+    </PROTOCOLS>
+</ROSETTASCRIPTS>

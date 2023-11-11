@@ -1,0 +1,30 @@
+<ROSETTASCRIPTS>
+   <SCOREFXNS>
+     <ScoreFunction name="SFXN2" weights="beta_nov16_cst.wts">
+     </ScoreFunction>
+   </SCOREFXNS>
+
+   <RESIDUE_SELECTORS>
+     <ResiduePDBInfoHasLabel name="hbnet_residues" property="HBNet" />
+   </RESIDUE_SELECTORS>
+
+   <TASKOPERATIONS>
+     <OperateOnResidueSubset name="hbnet_task" selector="hbnet_residues">
+         <PreventRepackingRLT/>
+     </OperateOnResidueSubset>
+   </TASKOPERATIONS>
+
+   <FILTERS>
+   </FILTERS>
+
+   <MOVERS>
+     <AtomCoordinateCstMover name="apply_coordinate_constraints" bounded="false" coord_dev="0.75" sidechain="false" />
+     <FastRelax name="relax" scorefxn="SFXN2" repeats="5" batch="false" ramp_down_constraints="false" cartesian="false" bondangle="false" bondlength="false" min_type="dfpmin_armijo_nonmonotone"/>
+   </MOVERS>
+
+<PROTOCOLS>
+  <Add mover_name="apply_coordinate_constraints"/>
+  <Add mover_name="relax"/>
+</PROTOCOLS>
+
+</ROSETTASCRIPTS>

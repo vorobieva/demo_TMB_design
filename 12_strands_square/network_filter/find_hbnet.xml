@@ -1,0 +1,67 @@
+<ROSETTASCRIPTS>
+   <SCOREFXNS>
+     <ScoreFunction name="SFXN1" weights="ref2015.wts">
+       Reweight scoretype="cart_bonded" weight="0.5"/>
+       Reweight scoretype="pro_close" weight="0.0"/>
+     </ScoreFunction>
+   </SCOREFXNS>
+
+   <RESIDUE_SELECTORS>
+
+        <Index name="surfRes" resnums="7A,9A,11A,13A,15A,21A,23A,25A,27A,29A,31A,35A,37A,39A,41A,43A,49A,51A,53A,55A,57A,59A,63A,65A,67A,69A,71A,77A,79A,81A,83A,85A,87A,89A,93A,95A,97A,99A,101A,103A,109A,111A,113A,115A,117A,119A,121A,125A,127A,129A,131A,133A,139A,141A,143A,145A,147A,149A,153A,155A,157A,159A,161A,167A,169A,171A,173A,175A,177A" />
+        <Index name="coreRes" resnums="2A,6A,8A,10A,12A,14A,22A,24A,26A,28A,30A,36A,38A,40A,42A,50A,52A,54A,56A,58A,64A,66A,68A,70A,78A,80A,82A,84A,86A,88A,94A,96A,98A,100A,102A,110A,112A,114A,116A,118A,120A,126A,128A,130A,132A,140A,142A,146A,148A,154A,156A,158A,160A,168A,170A,172A,174A,176A" />
+        <Index name="bdryRes" resnums="1A,3A,4A,5A,16A,17A,18A,19A,20A,32A,33A,34A,44A,45A,46A,47A,48A,60A,61A,62A,72A,73A,74A,75A,76A,90A,91A,92A,104A,105A,106A,107A,108A,122A,123A,124A,134A,135A,136A,137A,138A,150A,151A,152A,162A,163A,164A,165A,166A,178A,179A" />
+
+   </RESIDUE_SELECTORS>
+
+   <TASKOPERATIONS>
+
+            <OperateOnResidueSubset name="design_Core" selector="coreRes" >
+            <RestrictAbsentCanonicalAASRLT aas="ACDEFGHIKLMNPQRSTVYW"/>
+            </OperateOnResidueSubset>
+            <OperateOnResidueSubset name="repack_Bdry" selector="bdryRes" >
+            <PreventRepackingRLT/>
+            </OperateOnResidueSubset>
+            <OperateOnResidueSubset name="repack_Surf" selector="surfRes" >
+            <PreventRepackingRLT/>
+            </OperateOnResidueSubset>
+
+            OperateOnResidueSubset name="design_helixBound_AA" selector="boundH" >
+            RestrictAbsentCanonicalAASRLT aas="ADEIKLMNQSTVYW"/>
+            /OperateOnResidueSubset>
+            OperateOnResidueSubset name="design_strandBound_AA" selector="boundE" >
+            RestrictAbsentCanonicalAASRLT aas="AEDFIKLMNQRSTVY"/>
+            /OperateOnResidueSubset>
+            OperateOnResidueSubset name="design_loopBound_AA" selector="boundL" >
+            RestrictAbsentCanonicalAASRLT aas="ADEFGIKLMNPQRSTVY"/>
+        /OperateOnResidueSubset>
+
+            OperateOnResidueSubset name="repack_helixSurf_AA" selector="surfH" >
+            RestrictToRepackingRLT/>
+            /OperateOnResidueSubset>
+            OperateOnResidueSubset name="repack_strandSurf_AA" selector="surfE" >
+            RestrictToRepackingRLT/>
+            /OperateOnResidueSubset>
+            OperateOnResidueSubset name="repack_loopSurf_AA" selector="surfL" >
+            RestrictToRepackingRLT/>
+            /OperateOnResidueSubset>
+
+   </TASKOPERATIONS>
+
+   <FILTERS>
+     
+   </FILTERS>
+
+   <MOVERS>
+     <MakePolyX name="polyA" aa="ALA" keep_pro="1"  keep_gly="1" keep_disulfide_cys="0" />
+     <HBNet name="find_net" scorefxn="SFXN1" store_network_scores_in_pose="true" find_only_native_networks="True" no_heavy_unsats_allowed="false" min_percent_hbond_capacity="0.35" task_operations="design_Core,repack_Bdry,repack_Surf" write_network_pdbs="true" hb_threshold="-0.85" verbose="1" max_unsat_Hpol="1000" />
+
+   </MOVERS>
+
+<PROTOCOLS>
+  Add mover_name="polyA"/>
+  <Add mover_name="find_net"/>
+  Add mover_name="MPM_relax"/>
+</PROTOCOLS>
+
+</ROSETTASCRIPTS>

@@ -1,0 +1,11 @@
+First round of combinatorial sequence design of the lipid-exposed surface. 
+
+For each input, generate 10 models using the following Rosetta command:
+cd $LINE && /software/rosetta/latest/bin/rosetta_scripts -s ../$LINE.pdb -parser:protocol ../design.xml -nstruct 10 > stdout.txt
+where $LINE is the name of the input model. 
+
+Analyze the output first using the script analyze_round2_surf.py (generates an oupyt file pdbs_stable_motifs.csv that list the retention of the mortise-tenon folding motif after side-chains repacking). Then select the stable motifs using the analyze_round2_surf.ipynb Jupyter notebook. 
+
+Rosetta version used to generate the pubmished designs:
+Rosetta version: 2020.50+HEAD.1295438cd4b 1295438cd4bd2be39c9dbbfab8db669ab62415ab git@github.com:RosettaCommons/main.git 2020-12-12T00:30:01
+ 

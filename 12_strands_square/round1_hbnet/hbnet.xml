@@ -1,0 +1,102 @@
+<ROSETTASCRIPTS>
+   <SCOREFXNS>
+     <ScoreFunction name="SFXN1" weights="beta_nov16.wts">
+       Reweight scoretype="cart_bonded" weight="0.5"/>
+       Reweight scoretype="pro_close" weight="0.0"/>
+     </ScoreFunction>
+   </SCOREFXNS>
+
+   <RESIDUE_SELECTORS>
+
+     Makes core, which will be hydrophilic and mutated with hbnet
+     <Layer name="core" select_core="true" select_boundary="false" select_surface="false"
+         ball_radius="2.0" use_sidechain_neighbors="true"
+         sc_neighbor_dist_exponent="1.0" sc_neighbor_dist_midpoint="9.0"
+         sc_neighbor_denominator="1.0" sc_neighbor_angle_shift_factor="0.5"
+         sc_neighbor_angle_exponent="2.0"
+         core_cutoff="2.1" surface_cutoff="1.0"
+       />
+
+      Boundary residues are those that are neither facing out or in. largely loops in this case
+      <Layer name="boundary" select_core="false" select_boundary="true" select_surface="false"
+         ball_radius="2.0" use_sidechain_neighbors="true"
+         sc_neighbor_dist_exponent="1.0" sc_neighbor_dist_midpoint="9.0"
+         sc_neighbor_denominator="1.0" sc_neighbor_angle_shift_factor="0.5"
+         sc_neighbor_angle_exponent="2.0"
+         core_cutoff="2.1" surface_cutoff="1.0"
+       />
+
+      Makes Hydrophobic surface "surface" without listed aromatics
+      <Layer name="surface" select_core="false" select_boundary="false" select_surface="true"
+         ball_radius="2.0" use_sidechain_neighbors="true"
+         sc_neighbor_dist_exponent="1.0" sc_neighbor_dist_midpoint="9.0"
+         sc_neighbor_denominator="1.0" sc_neighbor_angle_shift_factor="0.5"
+         sc_neighbor_angle_exponent="2.0"
+         core_cutoff="2.1" surface_cutoff="1.0"
+       />
+
+        <Index name="tyr26" resnums="26"/>	
+	<Index name="tyr114" resnums="114"/>
+
+        <And name="tyrs" selectors="tyr26,tyr114"/>
+
+	<Neighborhood name="neighbours26" selector="tyr26" distance="10.0" include_focus_in_subset="false" />
+        <Neighborhood name="neighbours114" selector="tyr114" distance="10.0" include_focus_in_subset="false" />
+	
+	<And name="tyr26_neighbours" selectors="core,neighbours26"/>
+	<And name="tyr114_neighbours" selectors="core,neighbours114"/>
+
+	<Or name="motifs" selectors="neighbours26,neighbours114,tyr26,tyr114"/>
+	<Or name="neighbours" selectors="neighbours26,neighbours114"/>
+
+	<Not name="other" selector="motifs"/>
+
+   </RESIDUE_SELECTORS>
+
+   <TASKOPERATIONS>
+
+     Fix everything that is not Tyr neighbours
+     <OperateOnResidueSubset name="keep_other" selector="other">
+       <PreventRepackingRLT/>
+     </OperateOnResidueSubset>
+
+     <OperateOnResidueSubset name="keep_surface" selector="surface">
+       <PreventRepackingRLT/>
+     </OperateOnResidueSubset>
+
+     <OperateOnResidueSubset name="keep_boundary" selector="boundary">
+       <PreventRepackingRLT/>
+     </OperateOnResidueSubset>
+
+     Set Tyr positions to repackable but only with tyrosines
+     <OperateOnResidueSubset name="keep_tyrs" selector="tyrs">
+       <RestrictAbsentCanonicalAASRLT aas="Y"/>
+     </OperateOnResidueSubset>
+	
+     Set the neighbourhood positions to tyrosines to designable with negatively charges side-chains
+     <OperateOnResidueSubset name="design_neighbours" selector="neighbours">
+       <RestrictAbsentCanonicalAASRLT aas="DE"/>
+     </OperateOnResidueSubset>
+
+   </TASKOPERATIONS>
+
+   <FILTERS>
+   </FILTERS>
+
+   <MOVERS>
+     <MakePolyX name="polyA" aa="ALA" keep_pro="1"  keep_gly="1" keep_disulfide_cys="0" />
+     <HBNet name="hbnet_core" scorefxn="SFXN1" hb_threshold="-0.1" verbose="1" max_unsat_Hpol="1000" min_percent_hbond_capacity="0.01" min_network_size="2" max_network_size="2" write_network_pdbs="1" task_operations="keep_other,keep_tyrs,design_neighbours" design_residues="YDE" />
+     <MultiplePoseMover name="MPM_relax" max_input_poses="100">
+         <xi:include href="../fast_relax.xml"/>
+     </MultiplePoseMover>
+
+
+   </MOVERS>
+
+<PROTOCOLS>
+  <Add mover_name="polyA"/>
+  <Add mover_name="hbnet_core"/>
+  Add mover_name="MPM_relax"/>
+</PROTOCOLS>
+
+</ROSETTASCRIPTS>
