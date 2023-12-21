@@ -16,6 +16,7 @@ The provided demo input files were developed to design 12-strands nanopores with
 7. networks_analysis (filtering of the designs based on the polar networks stabilizing the mortise-tenon folding motifs)
 8. round3_surf (second round of combinatorial design of the lipid-exposed surface residues)
 9. round4_surf (last round of combinatorial design of the lipid-exposed surface residues to fine-tune the hydrophobicity)
+10. picked (instructions to select designs for experimental validation)
 
 The final models of the ordered designs are provided in the design_models subdirectory.
 
